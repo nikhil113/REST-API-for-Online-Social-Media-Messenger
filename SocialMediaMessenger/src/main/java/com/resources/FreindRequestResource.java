@@ -3,21 +3,23 @@ package com.resources;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.container.TimeoutHandler;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.beans.Permission;
-import com.business.PermissionBusiness;
+import com.business.FriendRequestBusiness;
+import com.custom_annotation.AuthenticationNeeded;
 
-@Path("/permission")
-public class PermissionAndPrivacyResource {
+@Path("/")
+public class FreindRequestResource {
 	
 	public String getCurrentUserId(HttpHeaders header) {
 		
@@ -35,10 +37,12 @@ public class PermissionAndPrivacyResource {
 	}
 	
 	
-	@PUT
-	@Path("/profile")
-	public void updatePermissionOfUserProfile(final Permission permission, @Context final HttpHeaders header, final @Suspended AsyncResponse asyncResponse) {
-	
+	@POST
+	@Path("/sendfriendrequest/{profileId}")
+	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+	@AuthenticationNeeded
+	public void postFriendRequest(@PathParam("profileId") final String profileId, @Context final HttpHeaders header, final @Suspended AsyncResponse asyncResponse) {
+		
 		asyncResponse.setTimeout(5, TimeUnit.MINUTES);
 		asyncResponse.setTimeoutHandler(new TimeoutHandler() {
 			
@@ -50,14 +54,14 @@ public class PermissionAndPrivacyResource {
 		});
 		
 		new Thread() {
-		
+			
 			@Override
 			public void run() {
-				if(permission!=null) {
+				if(profileId!=null) {
 					
 					String currentUserId=getCurrentUserId(header);
-					PermissionBusiness permissionBusiness=new PermissionBusiness();
-					Response response=permissionBusiness.updatePermissionOfProfile(currentUserId, permission);
+					FriendRequestBusiness business=new FriendRequestBusiness();
+					Response response=business.postFriendRequest(currentUserId, profileId);
 					if(!asyncResponse.isDone())
 						asyncResponse.resume(response);
 					
@@ -72,9 +76,11 @@ public class PermissionAndPrivacyResource {
 	}
 	
 	
-	@PUT
-	@Path("/messages/{messageId}/{privacy}")
-	public void updatePrivacyOfMessage(@PathParam("messageId") final String messageId, @PathParam("privacy") final String privacy, @Context final HttpHeaders header, final @Suspended AsyncResponse asyncResponse) {
+	@POST
+	@Path("/confirmfriendrequest/{profileId}")
+	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+	@AuthenticationNeeded
+	public void confirmFriendRequest(@PathParam("profileId") final String profileId,@Context final HttpHeaders header,final @Suspended AsyncResponse asyncResponse) {
 		
 		asyncResponse.setTimeout(5, TimeUnit.MINUTES);
 		asyncResponse.setTimeoutHandler(new TimeoutHandler() {
@@ -90,12 +96,11 @@ public class PermissionAndPrivacyResource {
 			
 			@Override
 			public void run() {
-				if(messageId != null && privacy != null) {
-					
-					String currentUserId=getCurrentUserId(header);
+				String currentUserId=getCurrentUserId(header);
+				if(profileId != null) {
 					
 				}else {
-					if(!asyncResponse.isDone())
+					if(! asyncResponse.isDone())
 						asyncResponse.resume(Response.status(400).build());
 				}
 			}

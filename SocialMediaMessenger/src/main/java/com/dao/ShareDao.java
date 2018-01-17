@@ -5,20 +5,21 @@ package com.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import com.beans.Like;
-import com.beans.LikeInfo;
 import com.beans.Message;
 import com.beans.ResponseWithHateOAS;
+import com.beans.Share;
+import com.beans.ShareInfo;
 import com.beans.UserProfile;
 import com.initializer.DatabaseInitializer;
 
-public class LikeDao {
+public class ShareDao {
 	
-	public ResponseWithHateOAS getLikeInformationByMessageId(String messageId) {
+	public ResponseWithHateOAS getShareInformationByMessageId(String messageId){
 		
 		DatabaseInitializer initializer=new DatabaseInitializer();
 		Session session=initializer.getSession();
@@ -26,32 +27,33 @@ public class LikeDao {
 		Message message=new Message();
 		message.setMessageId(messageId);
 		
-		String hql="from Like where message=:message";
+		String hql="from Share where message=:message";
 		Query query=session.createQuery(hql);
 		query.setParameter("message", message);
-		
-		List likeList=query.list();
+		List shareList=query.list();
 		ResponseWithHateOAS response=new ResponseWithHateOAS();
 		List<String> userIdList=new ArrayList<>();
-		long likesCount=0;
-		for(Object object:likeList) {
-			Like like=(Like) object;
-			UserProfile user=like.getUser();
+		long shareCount=0;
+		for(Object object:userIdList) {
+			Share share=(Share) object;
+			
+			UserProfile user=share.getUser();
 			userIdList.add(user.getUserId());
-			likesCount++;
+			shareCount++;
 		}
 		
-		LikeInfo likeInfo=new LikeInfo();
-		likeInfo.setUserProfileId(userIdList);
-		likeInfo.setLikeCount(likesCount);
-		response.setObject(likeInfo);
-		// have to add hateoas.
+		ShareInfo shareInfo=new ShareInfo();
+		shareInfo.setUserProfileIdList(userIdList);
+		shareInfo.setShareCount(shareCount);
+		response.setObject(shareInfo);
+		//have to add hateoas
 		
 		session.close();
 		return response;
 	}
 	
-	public ResponseWithHateOAS getLikeInfoByMessageIdAndLikeId(String likeId, String messageId) {
+	
+	public ResponseWithHateOAS getShareInformationByMessageAndShareId(String messageId, String shareId) {
 		
 		DatabaseInitializer initializer=new DatabaseInitializer();
 		Session session=initializer.getSession();
@@ -59,23 +61,25 @@ public class LikeDao {
 		Message message=new Message();
 		message.setMessageId(messageId);
 		
-		String hql="from Like where likeId=:likeId and message=:message";
+		String hql="from Share where shareId=:shareId and message=:message";
 		Query query=session.createQuery(hql);
-		query.setParameter("likeId", likeId);
+		query.setParameter("shareId", shareId);
 		query.setParameter("message", message);
-		Like like=(Like) query.uniqueResult();
-		ResponseWithHateOAS response=new ResponseWithHateOAS();
 		
-		if(like != null) {
-			List<String> userProfileIdList=new ArrayList<>();
-			userProfileIdList.add(like.getUser().getUserId());
+		Share share=(Share) query.uniqueResult();
+		ResponseWithHateOAS response=new ResponseWithHateOAS();
+		List<String> userIdList=new ArrayList<>();
+		long count=0;
+		if(share != null) {
+			UserProfile user=share.getUser();
+			userIdList.add(user.getUserId());
+			count++;
 			
-			LikeInfo likeInfo=new LikeInfo();
-			likeInfo.setUserProfileId(userProfileIdList);
-			likeInfo.setLikeCount(1);
+			ShareInfo shareInfo=new ShareInfo();
+			shareInfo.setUserProfileIdList(userIdList);
+			shareInfo.setShareCount(count);
 			
-			
-			response.setObject(likeInfo);
+			response.setObject(shareInfo);
 			//have to add hateoas
 		}
 		
@@ -83,8 +87,7 @@ public class LikeDao {
 		return response;
 	}
 	
-	
-	public Like isAlreadyExist(String currentUserId, String messageId) {
+	public Share isAlreadyExist(String currentUserId, String messageId) {
 		
 		DatabaseInitializer initializer=new DatabaseInitializer();
 		Session session=initializer.getSession();
@@ -95,42 +98,43 @@ public class LikeDao {
 		Message message=new Message();
 		message.setMessageId(messageId);
 		
-		String hql="from Like where user=:user and message=:message";
+		String hql="from Share where user=:user and message=:message";
 		Query query=session.createQuery(hql);
 		query.setParameter("user", user);
 		query.setParameter("message", message);
 		Object object=query.uniqueResult();
-		Like like=null;
+		Share share=null;
 		if(object != null) {
-			like=(Like) object;
+			share=(Share) object;
 		}
 		
 		session.close();
-		return like;
+		return share;
 	}
 	
-	public Like postLike(Like like) {
+	public Share postShare(Share share) {
 		
 		DatabaseInitializer initializer=new DatabaseInitializer();
 		Session session=initializer.getSession();
-		session.save(like);
-		Like insertedLike=null;
+		
+		Share insertedShare=null;
+		
+		session.save(share);
 		Transaction transaction=session.beginTransaction();
 		try {
 			transaction.commit();
-			insertedLike=like;
+			insertedShare=share;
 		}catch(Exception e) {
 			e.printStackTrace();
 			transaction.rollback();
-		}
-		finally {
+		}finally {
 			session.close();
 		}
 		
-		return insertedLike;
+		return insertedShare;
 	}
 	
-	public boolean isValidToDelete(String currentUserId,String likeId) {
+	public boolean isValidToDelete(String currentUserId, String shareId) {
 		
 		DatabaseInitializer initializer=new DatabaseInitializer();
 		Session session=initializer.getSession();
@@ -139,28 +143,27 @@ public class LikeDao {
 		UserProfile user=new UserProfile();
 		user.setUserId(currentUserId);
 		
-		String hql="from Like where likeId=:likeId and user=:user";
+		String hql="from Share where shareId=:shareId and user=:user";
 		Query query=session.createQuery(hql);
-		query.setParameter("likeId", likeId);
+		query.setParameter("shareId", shareId);
 		query.setParameter("user", user);
 		Object object=query.uniqueResult();
 		if(object != null) {
 			status=true;
 		}
 		
-		session.close();
 		return status;
 	}
 	
-	public boolean deleteLike(String likeId) {
-		
+	public boolean deleteShare(String shareId) {
+	
 		DatabaseInitializer initializer=new DatabaseInitializer();
 		Session session=initializer.getSession();
 		boolean status=false;
 		
-		String hql="delete Like where likeId=:likeId";
+		String hql="delete Share where shareId=:shareId";
 		Query query=session.createQuery(hql);
-		query.setParameter("likeId", likeId);
+		query.setParameter("shareId", shareId);
 		Transaction transaction=session.beginTransaction();
 		try {
 			query.executeUpdate();
@@ -169,8 +172,7 @@ public class LikeDao {
 		}catch(Exception e) {
 			e.printStackTrace();
 			transaction.rollback();
-		}
-		finally {
+		}finally {
 			session.close();
 		}
 		

@@ -18,11 +18,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import com.business.LikeBusiness;
+import com.business.ShareBusiness;
 import com.custom_annotation.AuthenticationNeeded;
 
 @Path("/")
-public class LikeResource {
+public class ShareResource {
+	
 	
 	public String getCurrentUserId(HttpHeaders header) {
 		
@@ -39,10 +40,11 @@ public class LikeResource {
 		return currentUserId;
 	}
 	
+	
 	@GET
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
 	@AuthenticationNeeded
-	public void getLikeInformationByMessageId(@PathParam("messageId") final String messageId, final @Suspended AsyncResponse asyncResponse) {
+	public void getShareInfoByMessageId(@PathParam("messageId") final String messageId, final @Suspended AsyncResponse asyncResponse) {
 		
 		asyncResponse.setTimeout(5, TimeUnit.MINUTES);
 		asyncResponse.setTimeoutHandler(new TimeoutHandler() {
@@ -50,7 +52,6 @@ public class LikeResource {
 			@Override
 			public void handleTimeout(AsyncResponse asyncResponse) {
 				asyncResponse.resume(Response.serverError().build());
-				
 			}
 		});
 		
@@ -58,29 +59,27 @@ public class LikeResource {
 			
 			@Override
 			public void run() {
-				if(messageId != null) {
-					
-					LikeBusiness likeBusiness=new LikeBusiness();
-					Response response=likeBusiness.getLikeInformationByMessageId(messageId);
+				if(messageId!=null) {
+					ShareBusiness shareBusiness=new ShareBusiness();
+					Response response=shareBusiness.getShareInformationByMessageId(messageId);
 					if(! asyncResponse.isDone())
 						asyncResponse.resume(response);
-					
 				}else {
-					if(! asyncResponse.isDone()) {
+					if(! asyncResponse.isDone())
 						asyncResponse.resume(Response.status(400).build());
-					}
 				}
 			}
 			
 		}.start();
+		
 	}
 	
 	
 	@GET
-	@Path("/{likeId}")
+	@Path("/{shareId}")
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
 	@AuthenticationNeeded
-	public void getLikeInformationByMessageAndLikeId(@PathParam("messageId") final String messageId, @PathParam("likeId") final String likeId, final @Suspended AsyncResponse asyncResponse) {
+	public void getShareInfoByMessageAndShareId(@PathParam("messageId") final String messageId, @PathParam("shareId") final String shareId, final @Suspended AsyncResponse asyncResponse) {
 		
 		asyncResponse.setTimeout(5, TimeUnit.MINUTES);
 		asyncResponse.setTimeoutHandler(new TimeoutHandler() {
@@ -96,17 +95,19 @@ public class LikeResource {
 			
 			@Override
 			public void run() {
-				if(messageId != null && likeId !=null) {
+				
+				if(messageId!=null && shareId!=null) {
 					
-					LikeBusiness likeBusiness=new LikeBusiness();
-					Response response=likeBusiness.getLikeInfoByMessgaeIdAndLikeId(messageId, likeId);
-					if(! asyncResponse.isDone())
+					ShareBusiness shareBusiness=new ShareBusiness();
+					Response response=shareBusiness.getShareInformationByMessageAndShareId(messageId, shareId);
+					if(!asyncResponse.isDone())
 						asyncResponse.resume(response);
 					
 				}else {
-					if(! asyncResponse.isDone())
+					if(!asyncResponse.isDone())
 						asyncResponse.resume(Response.status(400).build());
 				}
+				
 			}
 			
 		}.start();
@@ -117,7 +118,7 @@ public class LikeResource {
 	@POST
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
 	@AuthenticationNeeded
-	public void postLike(@PathParam("messageId") final String messageId, @Context final HttpHeaders header, @Context final UriInfo uriInfo,final @Suspended AsyncResponse asyncResponse) {
+	public void postShare(@PathParam("messageId") final String messageId, @Context final HttpHeaders header, @Context final UriInfo uriInfo, final @Suspended AsyncResponse asyncResponse) {
 		
 		asyncResponse.setTimeout(5, TimeUnit.MINUTES);
 		asyncResponse.setTimeoutHandler(new TimeoutHandler() {
@@ -134,16 +135,16 @@ public class LikeResource {
 			@Override
 			public void run() {
 				
-				String currentUserId=getCurrentUserId(header);
 				if(messageId != null) {
 					
-					LikeBusiness likeBusiness=new LikeBusiness();
-					Response response=likeBusiness.postLike(currentUserId, messageId, uriInfo);
-					if(! asyncResponse.isDone())
+					String currentUserId=getCurrentUserId(header);
+					ShareBusiness shareBusiness=new ShareBusiness();
+					Response response=shareBusiness.postShare(currentUserId, messageId, uriInfo);
+					if(!asyncResponse.isDone())
 						asyncResponse.resume(response);
 					
 				}else {
-					if(! asyncResponse.isDone())
+					if(!asyncResponse.isDone())
 						asyncResponse.resume(Response.status(400).build());
 				}
 				
@@ -155,10 +156,10 @@ public class LikeResource {
 	
 	
 	@DELETE
-	@Path("/{likeId}")
+	@Path("{shareId}")
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
 	@AuthenticationNeeded
-	public void deleteLike(@PathParam("messageId") final String messageId, @PathParam("likeId") final String likeId, @Context final HttpHeaders header, final @Suspended AsyncResponse asyncResponse) {
+	public void deleteShare(@PathParam("messageId") final String messageId, @PathParam("shareId") final String shareId, @Context final HttpHeaders header, final @Suspended AsyncResponse asyncResponse) {
 		
 		asyncResponse.setTimeout(5, TimeUnit.MINUTES);
 		asyncResponse.setTimeoutHandler(new TimeoutHandler() {
@@ -174,19 +175,17 @@ public class LikeResource {
 			
 			@Override
 			public void run() {
-				
-				if(messageId != null && likeId != null) {
+				if(messageId != null && shareId != null) {
 					String currentUserId=getCurrentUserId(header);
-					LikeBusiness likeBusiness=new LikeBusiness();
-					Response response = likeBusiness.deleteLike(currentUserId, messageId, likeId);
+					ShareBusiness shareBusiness=new ShareBusiness();
+					Response response=shareBusiness.deleteShare(currentUserId, messageId, shareId);
 					if(! asyncResponse.isDone())
 						asyncResponse.resume(response);
 					
 				}else {
-					if(! asyncResponse.isDone())
+					if(!asyncResponse.isDone())
 						asyncResponse.resume(Response.status(400).build());
 				}
-				
 			}
 			
 		}.start();

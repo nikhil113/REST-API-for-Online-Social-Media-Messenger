@@ -131,5 +131,10 @@ public class MessageResource {
 	public LikeResource getLikeResource() {
 		return new LikeResource();
 	}
+	
+	@Path("{messageId}/shares")
+	public ShareResource getShareResource() {
+		return new ShareResource();
+	}
 
 }

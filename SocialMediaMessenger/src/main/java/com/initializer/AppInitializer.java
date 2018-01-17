@@ -21,6 +21,8 @@ public class AppInitializer extends Application{
 		resourcesClassSet.add(com.resources.TokenResource.class);
 		resourcesClassSet.add(com.resources.MessageResourceLinkedWithProfile.class);
 		resourcesClassSet.add(com.resources.MessageResource.class);
+		resourcesClassSet.add(com.resources.PermissionAndPrivacyResource.class);
+		resourcesClassSet.add(com.resources.FreindRequestResource.class);
 		
 		exceptionMapperClassSet.add(com.exception_mappers.InvalidEmailIdExceptionMapper.class);
 		exceptionMapperClassSet.add(com.exception_mappers.UnAuthorizedExceptionMapper.class);
