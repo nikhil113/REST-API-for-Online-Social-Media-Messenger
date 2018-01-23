@@ -1,0 +1,62 @@
+Realted to profile resource :
+
+1.Api to get all profile informations.(GET)-- /profile 
+2.Api to get the profile information on the basis of profile id.(GET)-- /profile/{profileId} 
+3.Api to create a profile.(POST)-- /profile 
+4.Api to update a profile.(PUT)-- /profile/ 
+5.Api to delete a profile.(DELETE)-- /profile/{profileId}
+
+
+Related to message resource :
+1.Api to get all messages belonging to a profile id.(GET)-- /profile/{profileId}/messages
+2.Api to get the message on the basis of message id and profile id.(GET)/profile/{profileId}/messages/{messageId} 
+3.Api to post a message by a profile id.(POST)/profile/{profileId}/messages
+4.Api to update a message on the basis of message id and profile id.(PUT)-- /profile/{profileId}/messages/{messageId}
+5.Api to delete all messages belonging to a profile id.(DELETE)-- /profile/{profileId}/messages
+6.Api to delete a message on the basis of message id and profile id.(DELETE)-- /profile/{profileId}/messages/{messageId}
+
+
+Related To Directly Access Message Resource :
+1. Api to get all messages.(GET)-- /messages 
+2. Api to get message on the basis of message id.(GET)-- /messages/{messageId}
+3. Api to post message.(POST)-- /messages 
+4. Api to update a message.(PUT)-- /messages/
+5. Api to delete a message.(DELETE)-- /messages/{messageId}
+ 
+
+Related to comment resource : 
+1.Api to get all comments belonging to a message id.(GET)-- /messages/{messageId}/comments 
+2.Api to get a comment on the basis of comment id and message id.(GET)-- /messages/{messageId}/comments/{commentId} 
+3.Api to post a comment belonging to a message id.(POST)-- /messages/{messageId}/comments 
+4.Api to update a comment belonging to a message id.(PUT)-- /messages/{messages/{messageId}/comments/{commentId}
+5.Api to delete a comment belonging to a message id.(DELETE)-- /messages/{messageId}/comments/{commentId}
+
+
+Related to like resource :
+1.Api to get all the likes information belonging to a message id.(GET)-- /messages/{messageId}/likes 
+2.Api to get the like information belonging to a message id and like id.(GET)-- /messages/{messageId}/likes/{likeId}
+3.Api to post a like belonging to a message.(POST)-- /messages/{messages/{messageId}/likes 
+4.Api to delete a like belonging to a message id.(DELETE)-- /messages/{messageId}/likes/{likeId} 
+
+
+Related to share resource :
+1.Api to get all shares information belonging to a message id.(GET)-- /messages/{messageId}/shares 
+2.Api to get the shares information on the basis of share id and message id.(GET)-- /messages/{messageId}/shares/{shareId} 
+3.Api to post a share belonging to a message id.(POST)-- /messages/{messageId}/shares 
+4.Api to delete a share on the basis of share id and message id.(DELETE-- /messages/{messages/{messageId}/shares/{shareId} 
+
+
+
+Api to post/update permissions :
+To update permissions of profile information.(PUT)-- /permissions/profile/
+ 
+ 
+Api to send freind request :
+/sendfriendrequest/{profileId} --done
+
+
+Api to confirm friend request :
+/confirmfriendrequest/{profileId} --done
+ 
+ 
+ 

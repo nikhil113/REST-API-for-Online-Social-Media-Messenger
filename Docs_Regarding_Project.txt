@@ -1,0 +1,25 @@
+1. User will first sign up by passing all relevent informations.During sign up user will be assigned unique id and that id will be returned in the response.
+2. In order to access any end point or api, user should first get token. For getting token, user should pass id and password. The server will first verify id and password.If it get validated,
+  then server will send one token which the user can use to access other api.The token will actually comprise of id:MD5 hash of password ,then space and then time in milliseconds till it is valid.
+  Example- USER_1:hashvalue 12330049948.
+3. Whenever user has to access some end point or api, he will pass token as authorization header. First the token will be validated by the filter and if validated, then he will be redirected to the 
+   corresponding api.
+4. UserProfile- A person can do sign up using a POST api. A user can also get Profile Informations of other users by GET api. But he can get all fields if he is a friend of that person or he will get only 
+	those fields which are marked as PUBLIC by other users.A user can also update his profile by using PUT api.A user can also delete profile by using DELETE api.
+5. Message Linked With Profile- A user can get all the messages belonging to a profile but he can get all messages if he is a friend of that person or only those messages that are markes as PUBLIC by other 
+	users.Then a user can also get specific message by passing message id. A person can also post,update and delete messages.
+6. Comment- A user can post comments on any message.A user can get all comments belonging to a message.Now here a user can get only those comments which are marked as PUBLIC or the owner of the comment is a 
+	friend of that particular user.A user can also update or delete his own comments.
+7. Like- A person can post like for a message.A person can get all like information of a message.A person can also delete his like for a particular message.
+8. Share -This case is similar to like resource.
+9. Permission- A person can also update all his permission settings.
+10.Friend Request- A person can send friend reuqest to any person and can also confirm the friend request posted to him.
+
+
+HATEOAS IN PROJECT:--
+
+1. Comment Resource- While getting list of comments belonging to a message or while getting comment by comment id, we can also send uri of the owner of comment.  
+2. Like Resource- While getting like information belonging to a message or while getting like information by like id, we can also send uri of the owner of like.
+3. Share Resource- While getting share information belonging to message or while getting share information by share id, we can also send uri of the owner of share.
+4. Message Resource- While getting all messages or while getting message by message id, we can also send uri for getting comment,like and share information of the corresponding message.
+5. Profile Resource- While getting profile information, we can also uri for getting all messages belonging to the corresponding profile.  

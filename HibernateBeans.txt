@@ -1,0 +1,119 @@
+UserProfile{
+	
+	@Id
+	userProfileId;
+	
+	password
+	profileName;
+	emailId;
+	mobileNo;
+	
+	@Embedded
+	Address;
+	
+	created;
+	
+	@ElementCollection
+	List<Id> friendsList;
+	
+	@ElementCollection
+	List<Id> friendRequestSentList;
+	
+	@ElementCollection
+	List<Id> pendingFriendRequestList;
+	
+
+}
+
+
+Permission{
+	@Id
+	permissionId;
+	
+	@OneToOne
+	UserProfile
+	
+	// all the below fields are of boolean type.
+	profileName;
+	emailId;
+	mobileNo;
+	address;
+	created;
+	friends;
+	friendRequestSent;
+	pendingFriendRequest;
+	
+
+}
+
+Message{
+	@Id
+	messageId;
+
+	content;
+	contentType;
+	created;
+	
+	@ManyToOne
+	UserProfile
+	
+	privacy // whether the post is public or private.
+
+}
+
+Comment{
+	@Id
+	commentId;
+	
+	content
+	contentType
+	created
+	
+	@ManyToOne
+	Message
+	
+	@ManyToOne
+	UserProfile
+
+	@OneTOMany
+	Likes
+	
+	@OneTOMany
+	Shares
+}
+
+Likes{
+	@Id
+	likeId;
+	
+	@ManyToOne
+	Message;
+	
+	@ManyToOne
+	UserProfile;
+	
+	created;
+}
+
+Shares{
+	@Id
+	shareId;
+	
+	@ManyToOne
+	Message;
+	
+	@ManyToOne
+	UserProfile
+	
+	created
+}
+
+Token{
+	@Id
+	tokenId;
+	
+	token;
+	
+	@OneToOne
+	UserProfile
+}
