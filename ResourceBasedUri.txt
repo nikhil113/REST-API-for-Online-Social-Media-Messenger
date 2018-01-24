@@ -52,11 +52,11 @@ To update permissions of profile information.(PUT)-- /permissions/profile/
  
  
 Api to send freind request :
-/sendfriendrequest/{profileId} --done
+/sendfriendrequest/{profileId} 
 
 
 Api to confirm friend request :
-/confirmfriendrequest/{profileId} --done
+/confirmfriendrequest/{profileId} 
  
  
  
